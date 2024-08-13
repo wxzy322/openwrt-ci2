@@ -93,7 +93,6 @@ jobs:
     - name: Run DIY Script(运行DIY脚本)
       run: |
         chmod +x $OPENWRT_PATH/$DIY_SCRIPT
-        cd openwrt
         $OPENWRT_PATH/$DIY_SCRIPT
     
     - name: Install Feeds(安装feeds)
