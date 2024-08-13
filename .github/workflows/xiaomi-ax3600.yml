@@ -2,7 +2,7 @@ name: xiaomi-ax3600
 
 on:
   workflow_dispatch:
-  #schedule:
+  schedule:
    # - cron: 0 19 * * *
 
 env:
