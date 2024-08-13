@@ -93,7 +93,8 @@ jobs:
     - name: Run DIY Script(运行DIY脚本)
       run: |
         chmod +x $OPENWRT_PATH/$DIY_SCRIPT
-        $OPENWRT_PATH/$DIY_SCRIPT
+        cd $OPENWRT_PATH
+        ./$DIY_SCRIPT
     
     - name: Install Feeds(安装feeds)
       run: |
