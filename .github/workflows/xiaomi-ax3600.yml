@@ -90,7 +90,7 @@ jobs:
         mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
         prefix: ${{ env.OPENWRT_PATH }}
 
-     - name: Run DIY Script(运行DIY脚本)
+    - name: Run DIY Script(运行DIY脚本)
       run: |
         chmod +x $OPENWRT_PATH/$DIY_SCRIPT
         cd openwrt
