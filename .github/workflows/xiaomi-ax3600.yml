@@ -1,4 +1,4 @@
-name: IPQ60XX-ALL
+name: xiaomi-ax3600
 
 on:
   workflow_dispatch:
@@ -8,13 +8,13 @@ on:
 env:
   REPO_URL: https://github.com/LiBwrt-op/openwrt-6.x.git
   REPO_BRANCH: main
-  CONFIG_FILE: configs/ipq60xx-all.config
+  CONFIG_FILE: configs/ax3600-libwrt.config
   DIY_SCRIPT: diy-script.sh
   CLASH_KERNEL: amd64
   CACHE_TOOLCHAIN: true
   UPLOAD_BIN_DIR: false
   FIRMWARE_RELEASE: true
-  FIRMWARE_TAG: IPQ60XX-ALL
+  FIRMWARE_TAG: xiaomi-ax3600
   TZ: Asia/Shanghai
 
 jobs:
@@ -88,6 +88,12 @@ jobs:
         ccache: false
         mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
         prefix: ${{ env.OPENWRT_PATH }}
+
+     - name: Run DIY Script(运行DIY脚本)
+      run: |
+        chmod +x $OPENWRT_PATH/$DIY_SCRIPT
+        cd openwrt
+        $OPENWRT_PATH/$DIY_SCRIPT
     
     - name: Install Feeds(安装feeds)
       run: |
@@ -163,8 +169,8 @@ jobs:
           - 💻 这是 ${{ env.FIRMWARE_TAG }} 平台使用的 OpenWrt 固件
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
-          - 🌐 默认地址: 192.168.1.1
-          - 🔑 默认密码: password
+          - 🌐 默认地址: 10.1.1.1
+          - 🔑 默认密码: 
           ### 🧊 固件版本
           - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
           - ${{ env.VERSION_INFO }}
