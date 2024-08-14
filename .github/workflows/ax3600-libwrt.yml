@@ -93,7 +93,7 @@ jobs:
         
     - name: Run DIY Script(运行DIY脚本)
       run: |
-        cd $OPENWRT_PATH
+        cd $GITHUB_WORKSPACE  # 修改为 GitHub 仓库根目录
         chmod +x $DIY_SCRIPT
         ./$DIY_SCRIPT
         
