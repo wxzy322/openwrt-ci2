@@ -99,7 +99,7 @@ jobs:
 
     - name:  Run DIY Script(运行DIY脚本)
       run: |
-        chmod +x $DIY_P1_SH
+        chmod +x $DIY_SCRIPT
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_SCRIPT
         
