@@ -1,4 +1,4 @@
-name: 360v6-libwrt-6.6
+name: 360v6-libwrt-6.6-nss
 
 on:
   repository_dispatch:
