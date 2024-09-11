@@ -1,22 +1,21 @@
-name: 360v6-libwrt-6.6-nss
+
+name: 360v6-libwrt-显示内核版本
 
 on:
-  repository_dispatch:
   workflow_dispatch:
   #schedule:
-    #- cron: 0 19 * * *
+   # - cron: 0 19 * * *
 
 env:
   REPO_URL: https://github.com/LiBwrt-op/openwrt-6.x.git
   REPO_BRANCH: main
   CONFIG_FILE: configs/360v6-libwrt6.6.config
-  PATCHES_FILE_1: patches/0001-show-soc-status-on-luci.patch
   DIY_SCRIPT: diy-part1.sh
   CLASH_KERNEL: amd64
   CACHE_TOOLCHAIN: true
   UPLOAD_BIN_DIR: false
   FIRMWARE_RELEASE: true
-  FIRMWARE_TAG: 360v6
+  FIRMWARE_TAG: 360v6-libwrt
   TZ: Asia/Shanghai
 
 jobs:
@@ -70,6 +69,10 @@ jobs:
         echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
         VERSION_INFO=$(git show -s --date=short --format="作者: %an<br/>时间: %cd<br/>内容: %s<br/>hash: %H")
         echo "VERSION_INFO=$VERSION_INFO" >> $GITHUB_ENV
+        VERSION_KERNEL=$(grep -oP 'LINUX_KERNEL_HASH-\K[0-9]+\.[0-9]+\.[0-9]+' include/kernel-6.6)
+        echo "VERSION_KERNEL=$VERSION_KERNEL" >> $GITHUB_ENV
+        VERSION_LOG=$(git log --since="$(date -d 'yesterday 00:00' '+%Y-%m-%dT%H:%M:%S')" --until="$(date -d 'today 00:00' '+%Y-%m-%dT%H:%M:%S')" --pretty=format:"%h %s" --no-merges -- . ':(exclude)scripts/feeds')
+        echo "VERSION_LOG=$VERSION_LOG" >> $GITHUB_ENV
 
     - name: Generate Variables(生成变量)
       run: |
@@ -90,28 +93,19 @@ jobs:
         ccache: false
         mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
         prefix: ${{ env.OPENWRT_PATH }}
-        
 
     - name:  Run DIY Script(运行DIY脚本)
       run: |
         chmod +x $DIY_SCRIPT
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_SCRIPT
-        
+    
     - name: Install Feeds(安装feeds)
       run: |
         cd $OPENWRT_PATH
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-
-    - name: Apply patches(安装补丁)   
-      run: |
-        git config --global user.name "OpenWrt Builder"
-        git config --global user.email "buster-openwrt@ovvo.uk"
-        cp $PATCHES_FILE_1 $OPENWRT_PATH/feeds/luci
-        cd $OPENWRT_PATH/feeds/luci
-        git am 0001-show-soc-status-on-luci.patch
-        
+  
     - name: Load Custom Configuration(加载自定义配置)
       run: |
         [ -e files ] && mv files $OPENWRT_PATH/files
@@ -183,5 +177,8 @@ jobs:
           - 🌐 默认地址: 10.1.1.1
           - 🔑 默认密码: 
           ### 🧊 固件版本
+          - 固件内核版本：${{ env.VERSION_KERNEL }}
           - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
           - ${{ env.VERSION_INFO }}
+          - 源码更新日志
+          ${{ env.VERSION_LOG }}
